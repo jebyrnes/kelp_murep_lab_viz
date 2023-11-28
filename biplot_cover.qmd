@@ -24,6 +24,7 @@ theme_set(theme_classic(base_size = 18))
 ```{r}
 #| echo: false
 options(gargle_oauth_email = "jarrett.byrnes@gmail.com")
+gs4_deauth() #run if things are messing up
 ```
 
 ## Load Data

@@ -23,7 +23,7 @@ library(leaflet.extras)
 ```{r}
 #| echo: false
 options(gargle_oauth_email = "jarrett.byrnes@gmail.com")
-```
+gs4_deauth() #run if things are messing up```
 
 ## Load the Data
 
