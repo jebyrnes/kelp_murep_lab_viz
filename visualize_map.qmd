@@ -32,7 +32,7 @@ gs4_deauth() #run if things are messing up```
 #| message: false
 
 # Load in the data and turn degree/minute/second into latlong
-kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/edit?usp=sharing") |>
+kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/") |>
   mutate(Latitude = gsub("[(,)]", "", Latitude),
          Longitude = gsub("[(,)]", "", Longitude),
          Latitude = gsub("\\.0 ", " ", Latitude),
