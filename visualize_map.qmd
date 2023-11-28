@@ -1,0 +1,142 @@
+---
+title: "Map of Kelp Abundances"
+format: 
+  html:
+    fig-width: 10
+    fig-height: 8
+---
+
+## Load Libraries
+
+```{r}
+#| warning: false
+#| message: false
+
+library(googlesheets4) #handles data
+library(dplyr) #for data manipulation
+library(sf) #geospatial processing
+library(measurements) #to make lat/long into decimal degrees
+library(leaflet) #pretty scrollable Maps
+library(leaflet.extras)
+```
+
+```{r}
+#| echo: false
+options(gargle_oauth_email = "jarrett.byrnes@gmail.com")
+```
+
+## Load the Data
+
+```{r}
+#| warning: false
+#| message: false
+
+# Load in the data and turn degree/minute/second into latlong
+kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/edit?usp=sharing") |>
+  mutate(Latitude = gsub("[(,)]", "", Latitude),
+         Longitude = gsub("[(,)]", "", Longitude),
+         Latitude = gsub("\\.0 ", " ", Latitude),
+         Longitude = gsub("\\.0 ", " ", Longitude),
+         Longitude = gsub("70 ", "-70 ", Longitude),
+         ) |>
+  mutate(Latitude = conv_unit(Latitude, 
+                              from = "deg_min_sec", 
+                              to = "dec_deg"),
+         Longitude = conv_unit(Longitude, 
+                              from = "deg_min_sec", 
+                              to = "dec_deg"),
+         )
+
+# Convert the data into a sf spatial object with
+# a coordinate reference system of lat/long with WGS84 
+# https://epsg.io/4326
+kelp_labels <- kelp_labels |>
+  st_as_sf(coords = c("Longitude", "Latitude"),
+           crs = 4326)
+
+kelp_labels_filtered <- 
+  kelp_labels |>
+  filter(!is.na(`Kelp % Cover`))
+```
+
+## Plot Kelp
+
+First, a basic map for later use
+```{r}
+base_map <- leaflet(kelp_labels_filtered) |>
+    #the setup
+      addProviderTiles(providers$Esri.WorldTopoMap, 
+                       group = "Topo Map") |>
+      addProviderTiles(providers$Esri.WorldImagery, 
+                       group = "World Imagery") |>
+      addProviderTiles(providers$Esri.WorldGrayCanvas, 
+                       group = "ESRI World Gray Canvas",
+                       options = providerTileOptions(noWrap = TRUE)) |>
+      setView(lat = 42.5264892, lng = -70.8222588, zoom = 12) |>       addLayersControl(
+        baseGroups = c("Topo Map", "ESRI World Gray Canvas", 
+                       "World Imagery"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) |>
+    addFullscreenControl()
+
+```
+
+Now plot kelp
+
+```{r}
+pal <- colorNumeric(
+  palette = viridis::viridis_pal(option = "D")(5),
+  domain = kelp_labels_filtered$`Kelp % Cover`)
+
+base_map |>
+  addCircleMarkers(radius = 5,
+                   color = ~pal(`Kelp % Cover`)) |>
+        addLegend("bottomright",
+                pal = pal,
+                values = kelp_labels_filtered$`Kelp % Cover`,
+                title = "Kelp % Cover",
+                opacity = 1
+      ) 
+  
+```
+
+
+## Plot Vegetation
+
+
+```{r}
+pal_veg <- colorNumeric(
+  palette = viridis::viridis_pal(option = "G")(5),
+  domain = kelp_labels_filtered$`Kelp % Cover`)
+
+base_map |>
+  addCircleMarkers(radius = 5,
+                   color = ~pal_veg(`Non-Kelp Vegetation % Cover`)) |>
+        addLegend("bottomright",
+                pal = pal_veg,
+                values = kelp_labels_filtered$`Non-Kelp Vegetation % Cover`,
+                title = "Non-Kelp Vegetation % Cover",
+                opacity = 1
+      ) 
+  
+```
+
+## Plot Substrate
+
+
+```{r}
+pal_veg <- colorNumeric(
+  palette = viridis::viridis_pal(option = "E")(5),
+  domain = kelp_labels_filtered$`Substrate % Cover`)
+
+base_map |>
+  addCircleMarkers(radius = 5,
+                   color = ~pal_veg(`Substrate % Cover`)) |>
+        addLegend("bottomright",
+                pal = pal_veg,
+                values = kelp_labels_filtered$`Substrate % Cover`,
+                title = "Substrate % Cover",
+                opacity = 1
+      ) 
+  
+```

@@ -1,0 +1,116 @@
+---
+title: "Relationships of Different Covers"
+format: 
+  html:
+    fig-width: 10
+    fig-height: 8
+---
+
+
+## Load Libraries
+
+```{r}
+#| warning: false
+#| message: false
+
+library(googlesheets4) #handles data
+library(dplyr) #for data manipulation
+library(ggplot2) # for plotting
+
+theme_set(theme_classic(base_size = 18))
+```
+
+
+```{r}
+#| echo: false
+options(gargle_oauth_email = "jarrett.byrnes@gmail.com")
+```
+
+## Load Data
+
+
+```{r}
+#| warning: false
+#| message: false
+
+# Load in the data and turn degree/minute/second into latlong
+kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/edit?usp=sharing")
+
+kelp_labels_filtered <- 
+  kelp_labels |>
+  filter(!is.na(`Kelp % Cover`))
+```
+
+## Kelp v. Understory Vegetation
+
+```{r}
+#| warning: false
+#| message: false
+
+ggplot(kelp_labels_filtered,
+       mapping = aes(x = `Kelp % Cover`,
+                     y = `Non-Kelp Vegetation % Cover`)) +
+  geom_point(size = 2) +
+  stat_smooth()
+```
+
+```{r}
+#| echo: false
+
+ku_cor <- with(kelp_labels_filtered,
+     cor(`Kelp % Cover`,
+         `Non-Kelp Vegetation % Cover`)) |>
+  round(2)
+```
+
+Pearson Correlation: `r ku_cor`
+
+## Kelp v. Substrate
+
+
+```{r}
+#| warning: false
+#| message: false
+
+ggplot(kelp_labels_filtered,
+       mapping = aes(x = `Kelp % Cover`,
+                     y = `Substrate % Cover`)) +
+  geom_point(size = 2) +
+  stat_smooth()
+```
+
+```{r}
+#| echo: false
+
+ks_cor <- with(kelp_labels_filtered,
+     cor(`Kelp % Cover`,
+         `Substrate % Cover`)) |>
+  round(2)
+```
+
+Pearson Correlation: `r ks_cor`
+
+## Understory Vegetation v. Substrate
+
+
+```{r}
+#| warning: false
+#| message: false
+
+ggplot(kelp_labels_filtered,
+       mapping = aes(x = `Substrate % Cover`,
+                     y = `Non-Kelp Vegetation % Cover`)) +
+  geom_point(size = 2) +
+  stat_smooth()
+```
+
+```{r}
+#| echo: false
+
+su_cor <- with(kelp_labels_filtered,
+     cor(`Substrate % Cover`,
+         `Non-Kelp Vegetation % Cover`)) |>
+  round(2)
+```
+
+Pearson Correlation: `r su_cor`
