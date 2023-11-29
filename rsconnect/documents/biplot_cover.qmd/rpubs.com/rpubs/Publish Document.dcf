@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1121662/e4a3e262085542deb855d80359678cd8
+bundleId: https://api.rpubs.com/api/v1/document/1121662/e4a3e262085542deb855d80359678cd8
+url: http://rpubs.com/jebyrnes/1121662
+when: 1701224969.25515
+lastSyncTime: 1701224969.25515
