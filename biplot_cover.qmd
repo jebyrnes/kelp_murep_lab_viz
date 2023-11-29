@@ -35,7 +35,7 @@ gs4_deauth() #run if things are messing up
 #| message: false
 
 # Load in the data and turn degree/minute/second into latlong
-kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/")
+kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1rpz1wXdVTWC8lSkdoh4vjBuHYXUA7L86Qg1rVo_sOU4/")
 
 kelp_labels_filtered <- 
   kelp_labels |>

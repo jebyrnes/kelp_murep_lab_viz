@@ -24,6 +24,7 @@ library(leaflet.extras)
 #| echo: false
 options(gargle_oauth_email = "jarrett.byrnes@gmail.com")
 gs4_deauth() #run if things are messing up```
+```
 
 ## Load the Data
 
@@ -32,7 +33,7 @@ gs4_deauth() #run if things are messing up```
 #| message: false
 
 # Load in the data and turn degree/minute/second into latlong
-kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1-fJVqQ6jRDgsIIi4C9FggdzqTQY2GRCy3Ic_pqtnhTs/") |>
+kelp_labels <- read_sheet("https://docs.google.com/spreadsheets/d/1rpz1wXdVTWC8lSkdoh4vjBuHYXUA7L86Qg1rVo_sOU4/") |>
   mutate(Latitude = gsub("[(,)]", "", Latitude),
          Longitude = gsub("[(,)]", "", Longitude),
          Latitude = gsub("\\.0 ", " ", Latitude),
